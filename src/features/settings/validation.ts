@@ -15,8 +15,8 @@ export function validatePositiveInt(value: unknown): string | null {
 }
 
 export function validateReasoningEffort(value: unknown): string | null {
-  if (!['low', 'medium', 'high'].includes(String(value))) {
-    return 'Допустимые значения: low, medium, high'
+  if (!['none', 'low', 'medium', 'high'].includes(String(value))) {
+    return 'Допустимые значения: none, low, medium, high'
   }
   return null
 }

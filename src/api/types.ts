@@ -203,7 +203,7 @@ export type SettingKey =
   | 'rate_limit_window'
 
 export type LLMProvider = 'openai' | 'anthropic' | 'mock'
-export type ReasoningEffort = 'low' | 'medium' | 'high'
+export type ReasoningEffort = 'none' | 'low' | 'medium' | 'high'
 
 export interface LLMConfig {
   provider: LLMProvider

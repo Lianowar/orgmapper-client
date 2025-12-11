@@ -10,7 +10,7 @@
 - **Setting Source**: Источник значения настройки (database, env, default)
 - **LLM Provider**: Провайдер языковой модели (openai, anthropic, mock)
 - **Temperature**: Параметр креативности LLM (0.0-1.0)
-- **Reasoning Effort**: Глубина рассуждений LLM (low, medium, high)
+- **Reasoning Effort**: Глубина рассуждений LLM (none, low, medium, high)
 - **Admin Panel**: Административная панель для управления системой
 
 ## Requirements

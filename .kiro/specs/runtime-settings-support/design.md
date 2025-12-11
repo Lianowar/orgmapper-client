@@ -85,7 +85,7 @@ export type SettingKey =
   | 'rate_limit_window'
 
 export type LLMProvider = 'openai' | 'anthropic' | 'mock'
-export type ReasoningEffort = 'low' | 'medium' | 'high'
+export type ReasoningEffort = 'none' | 'low' | 'medium' | 'high'
 ```
 
 ### useSettings Hook (src/api/hooks/useSettings.ts)
@@ -209,7 +209,7 @@ const SETTINGS_CONFIG: SettingMeta[] = [
 **Validates: Requirements 3.1, 3.4**
 
 ### Property 6: Validation rejects invalid values
-*For any* temperature value outside [0.0, 1.0], OR any non-positive integer for max_tokens/timeout/rate_limit fields, OR any reasoning_effort not in [low, medium, high], the validation function SHALL return an error message.
+*For any* temperature value outside [0.0, 1.0], OR any non-positive integer for max_tokens/timeout/rate_limit fields, OR any reasoning_effort not in [none, low, medium, high], the validation function SHALL return an error message.
 **Validates: Requirements 4.1, 4.2, 4.3**
 
 ### Property 7: Validation errors disable save

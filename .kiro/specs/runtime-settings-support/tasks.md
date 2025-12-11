@@ -21,7 +21,7 @@
     - Create src/features/settings/validation.ts
     - Implement validateTemperature (0.0-1.0)
     - Implement validatePositiveInt for max_tokens, timeout, rate_limit fields
-    - Implement validateReasoningEffort (low/medium/high)
+    - Implement validateReasoningEffort (none/low/medium/high)
     - Implement validateProvider (openai/anthropic/mock)
     - _Requirements: 4.1, 4.2, 4.3_
   - [ ]* 3.2 Write property test for validation functions
