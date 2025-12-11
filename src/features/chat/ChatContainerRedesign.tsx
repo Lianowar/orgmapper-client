@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import type { SessionResponse } from '../../api/types'
+import type { SessionResponse, Message } from '../../api/types'
 import { useSendMessage, useSessionById } from '../../api/hooks'
 import { getErrorMessage } from '../../api/client'
 import MessageListRedesign from './MessageListRedesign'
 import ChatInputRedesign from './ChatInputRedesign'
-import TypingIndicatorRedesign from './TypingIndicatorRedesign'
 import FinalScreen from './FinalScreen'
 import styles from './ChatRedesign.module.css'
 
@@ -25,6 +24,7 @@ export default function ChatContainerRedesign({ session: initialSession, token }
   const [error, setError] = useState<string | null>(null)
   const [isPolling, setIsPolling] = useState(false)
   const [pollingTimedOut, setPollingTimedOut] = useState(false)
+  const [optimisticMessage, setOptimisticMessage] = useState<Message | null>(null)
   const pollingStartTime = useRef<number | null>(null)
 
   const shouldPoll = ['COMPLETED', 'EXTRACTING', 'SUMMARIZING'].includes(initialSession.status)
@@ -83,21 +83,35 @@ export default function ChatContainerRedesign({ session: initialSession, token }
 
   const handleSend = useCallback(async (content: string) => {
     setError(null)
+    
+    // Optimistic UI: show message immediately
+    const tempMessage: Message = {
+      id: `temp-${Date.now()}`,
+      role: 'user',
+      content,
+      sequence: session.messages.length + 1,
+      created_at: new Date().toISOString(),
+    }
+    setOptimisticMessage(tempMessage)
+    setDraft('')
+    localStorage.removeItem(DRAFT_KEY + token)
+    
     try {
       const result = await sendMessage.mutateAsync({
         content,
         idempotency_key: generateIdempotencyKey(),
       })
-      setDraft('')
-      localStorage.removeItem(DRAFT_KEY + token)
+      setOptimisticMessage(null)
       if (result.is_complete) {
         setIsPolling(true)
         pollingStartTime.current = Date.now()
       }
     } catch (e) {
+      // Remove optimistic message on error
+      setOptimisticMessage(null)
       setError(getErrorMessage(e))
     }
-  }, [sendMessage, token])
+  }, [sendMessage, token, session.messages.length])
 
   const isFinalized = session.status === 'FINALIZED'
   const isError = session.status === 'ERROR'
@@ -117,9 +131,11 @@ export default function ChatContainerRedesign({ session: initialSession, token }
         </p>
       </div>
 
-      <MessageListRedesign messages={session.messages} />
-      
-      {sendMessage.isPending && <TypingIndicatorRedesign />}
+      <MessageListRedesign 
+        messages={session.messages} 
+        optimisticMessage={optimisticMessage}
+        isTyping={sendMessage.isPending}
+      />
       
       {isProcessing && (
         <div className={`${styles.statusMessage} ${styles.processing}`}>
