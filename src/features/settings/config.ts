@@ -23,6 +23,7 @@ const providerOptions = [
 ]
 
 const reasoningOptions = [
+  { value: 'none', label: 'None' },
   { value: 'low', label: 'Low' },
   { value: 'medium', label: 'Medium' },
   { value: 'high', label: 'High' },
