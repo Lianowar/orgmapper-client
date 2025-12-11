@@ -1,0 +1,6 @@
+export { default as ChatPageRedesign } from '../ChatPageRedesign'
+export { default as ChatContainerRedesign } from '../ChatContainerRedesign'
+export { default as MessageRedesign } from '../MessageRedesign'
+export { default as MessageListRedesign } from '../MessageListRedesign'
+export { default as ChatInputRedesign } from '../ChatInputRedesign'
+export { default as TypingIndicatorRedesign } from '../TypingIndicatorRedesign'

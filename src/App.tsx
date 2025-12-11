@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ChatPage from './features/chat/ChatPage'
+import ChatPageRedesign from './features/chat/ChatPageRedesign'
 import AdminLayout from './components/AdminLayout'
 import EmployeesPage from './features/employees/EmployeesPage'
 import EmployeeDetailPage from './features/employees/EmployeeDetailPage'
@@ -14,6 +15,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/i/:token" element={<ChatPage />} />
+      <Route path="/redesign/:token" element={<ChatPageRedesign />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="employees" replace />} />
         <Route path="employees" element={<EmployeesPage />} />

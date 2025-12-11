@@ -13,6 +13,9 @@ export interface Message {
   content: string
   sequence: number
   created_at: string
+  tokens_used?: number | null
+  cost_usd?: number | null
+  model_used?: string | null
 }
 
 export interface SessionResponse {
@@ -139,6 +142,8 @@ export interface AdminSessionDetail {
   created_at: string
   questions_snapshot: Record<string, unknown>
   prompt_versions_snapshot: Record<string, unknown>
+  llm_config_snapshot: LLMConfigSnapshot | null
+  prompt_contents_snapshot: PromptContentsSnapshot | null
   messages: Message[]
   extracted_answers: ExtractedAnswer[] | null
   summary_text: string | null
@@ -199,3 +204,30 @@ export type SettingKey =
 
 export type LLMProvider = 'openai' | 'anthropic' | 'mock'
 export type ReasoningEffort = 'low' | 'medium' | 'high'
+
+export interface LLMConfig {
+  provider: LLMProvider
+  model: string
+  temperature: number
+  max_tokens: number
+  reasoning_effort: ReasoningEffort
+  timeout: number
+}
+
+export interface LLMConfigSnapshot {
+  chat: LLMConfig
+  extract: LLMConfig
+  summary: LLMConfig
+}
+
+export interface PromptContentsSnapshot {
+  chat: string | null
+  extractor: string | null
+  summary: string | null
+}
+
+export interface QuestionSnapshotItem {
+  question_key: string
+  text: string
+  is_required: boolean
+}

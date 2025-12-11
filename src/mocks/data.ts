@@ -81,6 +81,8 @@ export const mockAdminSessions: Record<string, AdminSessionDetail> = {
     created_at: '2024-12-10T10:00:00Z',
     questions_snapshot: {},
     prompt_versions_snapshot: {},
+    llm_config_snapshot: null,
+    prompt_contents_snapshot: null,
     messages: mockMessages,
     extracted_answers: null,
     summary_text: null,

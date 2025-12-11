@@ -1,11 +1,16 @@
 import { useParams } from 'react-router-dom'
-import { Title, Tabs, Paper, Text, Stack, Table, Badge, Button, Group } from '@mantine/core'
+import { Title, Tabs, Paper, Text, Stack, Table, Badge, Button, Group, Accordion } from '@mantine/core'
 import Markdown from 'react-markdown'
 import { useAdminSession, useReextract, useResummarize } from '../../api/hooks'
 import { useNotification } from '../../hooks/useNotification'
 import { getErrorMessage } from '../../api/client'
 import LoadingSkeleton from '../../components/LoadingSkeleton'
 import ErrorMessage from '../../components/ErrorMessage'
+import LLMConfigSection from './components/LLMConfigSection'
+import PromptVersionsSection from './components/PromptVersionsSection'
+import PromptContentsSection from './components/PromptContentsSection'
+import QuestionsSnapshotSection from './components/QuestionsSnapshotSection'
+import CostSummarySection from './components/CostSummarySection'
 
 export default function SessionDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -49,6 +54,7 @@ export default function SessionDetailPage() {
           <Tabs.Tab value="answers">Ответы</Tabs.Tab>
           <Tabs.Tab value="summary">Резюме</Tabs.Tab>
           <Tabs.Tab value="meta">Мета</Tabs.Tab>
+          <Tabs.Tab value="debug">Отладка</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="dialog">
@@ -57,6 +63,19 @@ export default function SessionDetailPage() {
               <Paper key={msg.id} p="sm" withBorder>
                 <Text size="xs" c="dimmed" mb={4}>{msg.role === 'user' ? 'Пользователь' : 'Ассистент'}</Text>
                 <Text style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</Text>
+                {msg.role === 'assistant' && (
+                  <Group gap="md" mt="xs">
+                    <Text size="xs" c="dimmed">
+                      Tokens: {msg.tokens_used ?? '—'}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Cost: ${msg.cost_usd?.toFixed(4) ?? '—'}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Model: {msg.model_used ?? '—'}
+                    </Text>
+                  </Group>
+                )}
               </Paper>
             ))}
           </Stack>
@@ -123,6 +142,45 @@ export default function SessionDetailPage() {
               </Button>
             </Group>
           </Stack>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="debug">
+          <Accordion defaultValue="llm-config">
+            <Accordion.Item value="llm-config">
+              <Accordion.Control>LLM Configuration</Accordion.Control>
+              <Accordion.Panel>
+                <LLMConfigSection llmConfigSnapshot={session.llm_config_snapshot} />
+              </Accordion.Panel>
+            </Accordion.Item>
+
+            <Accordion.Item value="prompt-versions">
+              <Accordion.Control>Prompt Versions</Accordion.Control>
+              <Accordion.Panel>
+                <PromptVersionsSection promptVersionsSnapshot={session.prompt_versions_snapshot} />
+              </Accordion.Panel>
+            </Accordion.Item>
+
+            <Accordion.Item value="prompt-contents">
+              <Accordion.Control>Prompt Contents</Accordion.Control>
+              <Accordion.Panel>
+                <PromptContentsSection promptContentsSnapshot={session.prompt_contents_snapshot} />
+              </Accordion.Panel>
+            </Accordion.Item>
+
+            <Accordion.Item value="questions-snapshot">
+              <Accordion.Control>Questions Snapshot</Accordion.Control>
+              <Accordion.Panel>
+                <QuestionsSnapshotSection questionsSnapshot={session.questions_snapshot} />
+              </Accordion.Panel>
+            </Accordion.Item>
+
+            <Accordion.Item value="cost-summary">
+              <Accordion.Control>Cost Summary</Accordion.Control>
+              <Accordion.Panel>
+                <CostSummarySection messages={session.messages} />
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
         </Tabs.Panel>
       </Tabs>
     </>

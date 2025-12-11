@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
 import { mockEmployeesList, mockEmployees, mockSessions, mockAdminSessions, mockQuestions, mockPrompts, mockBudget, mockMessages, mockSettings } from './data'
-import type { Employee, EmployeeListItem, Question, Prompt, Message, SessionResponse, AdminSessionDetail } from '../api/types'
+import type { Employee, Question, Prompt, Message } from '../api/types'
 
 let employeesList = [...mockEmployeesList]
 let employees = { ...mockEmployees }
