@@ -107,8 +107,9 @@ export default function ChatContainerRedesign({ session: initialSession, token }
         pollingStartTime.current = Date.now()
       }
     } catch (e) {
-      // Remove optimistic message on error
+      // Remove optimistic message and restore content to input on error
       setOptimisticMessage(null)
+      setDraft(content)
       setError(getErrorMessage(e))
     }
   }, [sendMessage, token, session.messages.length])
