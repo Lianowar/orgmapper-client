@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Title, Tabs, Paper, Textarea, Button, Group, Text, Stack, Badge } from '@mantine/core'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Title, Tabs, Paper, Textarea, Button, Group, Text, Stack, Badge, Code, Tooltip, Box } from '@mantine/core'
 import { usePrompts, useCreatePrompt, useActivatePrompt } from '../../api/hooks'
 import { useNotification } from '../../hooks/useNotification'
 import { getErrorMessage } from '../../api/client'
@@ -8,6 +8,14 @@ import ErrorMessage from '../../components/ErrorMessage'
 import ConfirmDialog from '../../components/ConfirmDialog'
 
 type PromptType = 'chat' | 'extractor' | 'summary'
+
+const variableDescriptions: Record<string, string> = {
+  employee_name: 'Полное имя сотрудника',
+  employee_position: 'Должность (или "не указана" если не задана)',
+  employee_department: 'Отдел (или "не указан" если не задан)',
+  questions: 'JSON-массив вопросов опроса',
+  answers: 'JSON-массив извлечённых ответов (только для summary)',
+}
 
 const typeLabels: Record<PromptType, string> = {
   chat: 'Chat',
@@ -21,10 +29,29 @@ export default function PromptsPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [content, setContent] = useState('')
   const [activateId, setActivateId] = useState<string | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const { data: prompts, isLoading, error } = usePrompts(type)
   const createPrompt = useCreatePrompt()
   const activatePrompt = useActivatePrompt(activateId || '')
+
+  const insertVariable = useCallback((variable: string) => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    
+    const varText = `{${variable}}`
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const newContent = content.slice(0, start) + varText + content.slice(end)
+    setContent(newContent)
+    
+    // Restore focus and cursor position after the inserted variable
+    setTimeout(() => {
+      textarea.focus()
+      const newPos = start + varText.length
+      textarea.setSelectionRange(newPos, newPos)
+    }, 0)
+  }, [content])
 
   const filtered = prompts?.filter((p) => p.type === type).sort((a, b) => b.version - a.version) || []
   const selected = filtered.find((p) => p.id === selectedId)
@@ -105,11 +132,26 @@ export default function PromptsPage() {
         <Paper p="md" withBorder style={{ flex: 1 }}>
           <Group justify="space-between" mb="sm">
             <Text fw={500}>Редактор</Text>
-            {variables.length > 0 && (
-              <Text size="xs" c="dimmed">Переменные: {variables.join(', ')}</Text>
-            )}
           </Group>
+          {variables.length > 0 && (
+            <Box mb="sm">
+              <Text size="xs" c="dimmed" mb={4}>Доступные переменные (кликните для вставки):</Text>
+              <Group gap="xs">
+                {variables.map((v) => (
+                  <Tooltip key={v} label={variableDescriptions[v] || v} withArrow>
+                    <Code
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => insertVariable(v)}
+                    >
+                      {`{${v}}`}
+                    </Code>
+                  </Tooltip>
+                ))}
+              </Group>
+            </Box>
+          )}
           <Textarea
+            ref={textareaRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}

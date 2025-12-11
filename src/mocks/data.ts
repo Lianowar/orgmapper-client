@@ -96,10 +96,10 @@ export const mockQuestions: Question[] = [
 ]
 
 export const mockPrompts: Prompt[] = [
-  { id: 'p1', type: 'chat', version: 1, content: 'You are a helpful assistant...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['{employee_name}', '{questions}', '{history}'] },
-  { id: 'p2', type: 'chat', version: 2, content: 'You are a helpful assistant v2...', is_active: false, created_at: '2024-12-05T10:00:00Z', supported_variables: ['{employee_name}', '{questions}', '{history}'] },
-  { id: 'p3', type: 'extractor', version: 1, content: 'Extract answers from conversation...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['{questions}', '{conversation}'] },
-  { id: 'p4', type: 'summary', version: 1, content: 'Summarize the employee profile...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['{employee_name}', '{answers}'] },
+  { id: 'p1', type: 'chat', version: 1, content: 'You are a helpful assistant...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['employee_name', 'employee_position', 'employee_department', 'questions'] },
+  { id: 'p2', type: 'chat', version: 2, content: 'You are a helpful assistant v2...', is_active: false, created_at: '2024-12-05T10:00:00Z', supported_variables: ['employee_name', 'employee_position', 'employee_department', 'questions'] },
+  { id: 'p3', type: 'extractor', version: 1, content: 'Extract answers from conversation...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['employee_name', 'employee_position', 'employee_department', 'questions'] },
+  { id: 'p4', type: 'summary', version: 1, content: 'Summarize the employee profile...', is_active: true, created_at: '2024-12-01T10:00:00Z', supported_variables: ['employee_name', 'employee_position', 'employee_department', 'answers'] },
 ]
 
 export const mockBudget: BudgetStatus = {
