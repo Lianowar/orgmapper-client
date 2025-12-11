@@ -23,6 +23,7 @@ export interface SessionResponse {
   status: SessionStatus
   messages: Message[]
   summary: string | null
+  welcome_message?: string | null
 }
 
 export interface SendMessageRequest {

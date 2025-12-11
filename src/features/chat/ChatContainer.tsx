@@ -113,7 +113,7 @@ export default function ChatContainer({ session: initialSession, token }: Props)
 
   return (
     <Stack style={{ flex: 1, minHeight: 0 }}>
-      <MessageList messages={session.messages} />
+      <MessageList messages={session.messages} welcomeMessage={session.welcome_message} />
       
       {sendMessage.isPending && <TypingIndicator />}
       
